@@ -109,27 +109,3 @@ def save(request):
     lastName = request.POST.get("lastName")
     email = request.POST.get("email")
     copyFile(name)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
