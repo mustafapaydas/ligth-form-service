@@ -1,0 +1,21 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %} {% endblock title %}</title>
+</head>
+<div class="container">
+<body>
+
+
+
+{% block body %}
+
+{% endblock body %}
+</body>
+</div>
+</html>

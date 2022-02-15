@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+
+ <div style="margin-top: 2em" class="form">
+    <div class="note">
+                    <p>{{ info.uuid }}</p>
+                </div>
+<form method="post" action="/saveInfo">
+{% csrf_token %}
+     <div class="row">
+         <div class="col-md-6">
+  <div class="form-group">
+    <label >Ad</label>
+    <input name="firstName" value="{{ info.name }}" class="form-control"   placeholder="Adınız">
+
+  </div>
+  <div class="form-group">
+ <label>Soyad</label>
+    <input name="lastName" type="text" class="form-control" value="{{ info.lastName }}" placeholder="Soyadınız">
+  </div>
+         </div>
+         <div class="col-md-6">
+  <div class="form-check">
+       <label >E-posta Adresi</label>
+    <input name="email" value="{{ info.email }}" type="text" class="form-control" placeholder="E-Posta adresiniz">
+
+  </div>
+
+
+
+             </select>
+
+</div>
+     </div>
+    <button type="submit"  class="btnSubmit">Gönder</button>
+</form>
+</div>
+
+{% endblock %}
+
