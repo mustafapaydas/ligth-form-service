@@ -23,7 +23,7 @@ class PersonalInfoForm(forms.ModelForm):
     otherPhone = forms.CharField(max_length=13,label="Ev Telefonu Numarası",required=False,widget=forms.TextInput(attrs={"placeholder":"Ev Telefonu","class":content}))
     file = forms.FileField()
     class Meta:
-        model = PersonalInfo
+        # model = PersonalInfo
         fields=["firstName","lastName","email","yearOfBirth","bornPlace","gender","address","cellPhone","otherPhone"]
 
 class EducationInfoForm(forms.ModelForm):

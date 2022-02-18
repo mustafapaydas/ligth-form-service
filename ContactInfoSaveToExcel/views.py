@@ -42,7 +42,8 @@ def addContact(request):
     info=readJsonFile(email)
     sendMail(info["uuid"],email)
 
-    return render(request,"send.html",{"message": f"Başvuru linki {email} adresine gönderildi"})
+
+    return HttpResponse(f"<h1 style='color:red; text-align:center; margin-top:2em'>Başvuru linki {email} adresine gönderildi</h1>")
 
 
 
