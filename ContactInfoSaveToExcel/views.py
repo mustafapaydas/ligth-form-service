@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 import os
 import json
 from CryptICE import IceKey
-
+import uuid
 
 import datetime
 import shutil
