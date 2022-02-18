@@ -1,43 +1,117 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block body %}
-
-
-
- <div style="margin-top: 2em" class="form">
-    <div class="note">
-                    <p>{{ info.uuid }}</p>
+     <div style="margin-top: 2em;" class="note">
+                    <p>Lütfen size ulaşabilmemiz için iletişim bilgilerinizi giriniz.</p>
                 </div>
-<form method="post" action="/saveInfo">
-{% csrf_token %}
-     <div class="row">
-         <div class="col-md-6">
-  <div class="form-group">
-    <label >Ad</label>
-    <input name="firstName" value="{{ info.name }}" class="form-control"   placeholder="Adınız">
+
+<div class="form-content">
+    <form  method="post"action="{% url 'saveInfo' %}">
+
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Adınız</label>
+{{ personalForm.firstName }}
 
   </div>
-  <div class="form-group">
- <label>Soyad</label>
-    <input name="lastName" type="text" class="form-control" value="{{ info.lastName }}" placeholder="Soyadınız">
-  </div>
-         </div>
-         <div class="col-md-6">
-  <div class="form-check">
-       <label >E-posta Adresi</label>
-    <input name="email" value="{{ info.email }}" type="text" class="form-control" placeholder="E-Posta adresiniz">
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Soyadınız</label>
+{{ personalForm.lastName }}
 
   </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Email</label>
+{{ personalForm.email }}
 
+  </div>
+<div class="col-md-3">
+    <label style="text-align: center;font-size: 18px">Doğum Yılı</label>
+{{ personalForm.yearOfBirth }}
+    <br>
+    <label style="text-align: center;font-size: 18px">Doğum Yeri</label>
+{{ personalForm.bornPlace }}
+  </div>
+        </div>
+        <br>
 
+        <div class="row">
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Adres</label>
+{{ personalForm.address }}
 
-             </select>
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Cinsiyet</label>
+{{ personalForm.gender }}
+
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Cep Telefonu</label>
+{{ personalForm.cellPhone }}
+
+  </div>
+<div class="col-md-3">
+    <label style="text-align: center;font-size: 18px">Ev Telefonu</label>
+{{ personalForm.otherPhone }}
+
+  </div>
+        </div>
+
+<br><br><br>
+         <div class="row">
+
+          <div class="col-md-6">
+            {{ foreign }}
+
+          </div>
+            <div class="col-md-6">
+        {{ reference }}
+
+          </div>
+        </div>
+
+<h3 style="color: #0275d8;text-align: center">Eğitim Bilgileri</h3>
+<div class="row">
+       <div class="col-2"></div>
+    <div class="col-8">
+{{ education }}
+</div>
+    <div class="col-2">
+
+    </div>
+</div>
+
+<br>
+        <br>
+<h3 style="color: #0275d8;text-align: center">ÖZEL BİLGİLER</h3>
+<div class="row">
+       <div class="col-2"></div>
+    <div class="col-8">
+{{ certificate }}
+</div>
+    <div class="col-2">
+
+    </div>
+</div>
+
+<h3 style="color: #0275d8;text-align: center">İŞ TECRÜBESİ BİLGİLERİ</h3>
+<div class="row">
+    <div class="col-md-6">
+        {{ works }}
+    </div>
+    <div class="col-md-6">
+{{ course }}
+    </div>
 
 </div>
-     </div>
-    <button type="submit"  class="btnSubmit">Gönder</button>
+        <div style="margin-top: 2em">
+{{ file }}
+</div>
+<button type="submit"  class="btnSubmit">Gönder</button>
+
 </form>
+
 </div>
 
 {% endblock %}
-

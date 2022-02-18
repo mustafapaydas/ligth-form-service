@@ -3,10 +3,11 @@ from django.core.mail import send_mail
 import os
 import json
 from CryptICE import IceKey
-import uuid
+
+
 import datetime
 import shutil
-
+from .Forms import *
 
 def index(request):
     return render(request,"index.html")
@@ -28,7 +29,7 @@ def addContact(request):
     validityTime=str(request.POST.get("validtyTime"))
     validityTime=validityTime.strip(validityTime[-5:])
     iceLink =str(generateCryptICE(email))
-    startingTime=datetime.datetime.now().hour
+
     applier={
         "name":name,
         "lastName":lastName,
@@ -36,7 +37,6 @@ def addContact(request):
         "validityTime":int(validityTime),
         "iceLink":iceLink,
         "uuid":str(uuid.uuid1()),
-        "startingTime":int(startingTime)
     }
     writeJsonFile(email,applier)
     info=readJsonFile(email)
@@ -56,11 +56,19 @@ def sendMail(link,email):
 )
 
 def expiredLinks():
-    for i in os.listdir("."):
+    for i in os.listdir("Jsons"):
         if (i.strip(i[:-4]) == "json"):
             info = readJsonFile(i.strip(i[-5:]))
-            if int(datetime.datetime.now().hour)  >= (info["validityTime"] + info["startingTime"]):
-                os.remove(i)
+            startingTime=os.stat(f"Jsons/{i}").st_ctime
+
+            generateDate=datetime.datetime.fromtimestamp(startingTime)
+            now=datetime.datetime.now()
+            validityTime=info["validityTime"]
+            validityTime=datetime.timedelta(hours=validityTime)
+
+            if (generateDate+validityTime) < now:
+                os.remove(f"Jsons/{i}")
+
 
 
 def generateCryptICE(email):
@@ -77,7 +85,7 @@ def generateCryptICE(email):
 
 def readJsonFile(email):
     with open(f"Jsons/{email}.json","r") as file:
-        info=json.load(file)
+        info = json.load(file)
     return info
 
 def writeJsonFile(email,jsonString):
@@ -85,16 +93,39 @@ def writeJsonFile(email,jsonString):
         json.dump(jsonString,file)
 
 
+
 def appeal(request,uuid):
     expiredLinks()
-    for i in os.listdir("./Jsons"):
+    for i in os.listdir("Jsons"):
         if (i.strip(i[:-4]) == "json"):
-            print(i)
             info = readJsonFile(i.strip(i[-5:]))
             if uuid == info["uuid"]:
-                return render(request, "appealForm.html", {"info": info})
-        else:
-            return HttpResponse("<h1 style='color:red; text-align:center; margin-top:2em'>Bulunamadı. Muhtemelen Linkinizin süresi dolmuş olabilir.</h1>")
+                personalForm = PersonalInfoForm(request.POST or None)
+                education = EducationInfoForm
+                foreign = ForeignLanguageInfoForm
+                certificate = CertificateInfoForm
+                work = WorkExperienceInfoForm
+                file=FileUpload(request.FILES or None)
+                reference=ReferenceInfoForm
+                course=CourseInfoForm
+                context = {
+                    "info": info,
+                    "personalForm": personalForm,
+                    "education": education,
+                    "foreign": foreign,
+                    "certificate": certificate,
+                    "works": work,
+                    "file":file,
+                    "reference":reference,
+                    "course":course
+                }
+
+
+
+
+                return render(request, "appealForm.html", context)
+    else:
+        return HttpResponse("<h1 style='color:red; text-align:center; margin-top:2em'>Bulunamadı. Muhtemelen Linkinizin süresi dolmuş olabilir. <a href='/generate'>Formu</a> Yeniden Doldurabilirsiniz</h1>")
 
 def copyFile(name):
 
@@ -104,8 +135,17 @@ def copyFile(name):
         shutil.copy("PR.04-FR.06 PERSONEL IS BASVURU FORMU.xlsx", f"AppealFormExcels/{name}.xlsx")
 
 
+
 def save(request):
     name = request.POST.get("firstName")
     lastName = request.POST.get("lastName")
     email = request.POST.get("email")
     copyFile(name)
+
+
+
+def save(request):
+    return HttpResponse("<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Başvurunuz Başarıyla Alınmıştır.</h1>")
+
+
+

@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ContactInfoSaveToExcel',
+    'crispy_forms',
 ]
-
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
@@ -149,7 +151,16 @@ EMAIL_HOST_USER = "mntsodev@outlook.com"
 EMAIL_HOST_PASSWORD = "Mnts123odev?***django"
 
 
+MEDIA_URL = '/CVs/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'CVs')
 
-
-
-#Mnts123odev?***django
+CRISPY_CLASS_CONVERTERS = {
+    'textinput': "form-control cst__radius",
+    'urlinput': "form-control cst__radius",
+    'numberinput': "form-control cst__radius",
+    'emailinput': "form-control cst__radius",
+    'dateinput': "form-control cst__radius",
+    'textarea': "form-control cst__radius",
+    'passwordinput': "form-control cst__radius",
+    'select': "form-control cst__radius",
+}
