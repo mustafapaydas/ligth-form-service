@@ -9,11 +9,12 @@
                 </div>
 
 <div class="form-content">
-    <form  method="post" enctype="multipart/form-data">
+    <form action="{% url 'saveInfo' %}" method="post" enctype="multipart/form-data">
 
     {% csrf_token %}
-
+<h2>KİMLİK BİLGİLERİ</h2>
     <div class="row">
+
         <div class="col-md-3">
             <label style="text-align: center;font-size: 18px">Adınız</label>
 {{ personalForm.firstName }}
@@ -69,10 +70,10 @@
 <div class="row">
        <div class="col-2"></div>
     <div class="col-8">
-        <div>
+       <h2>Askerlik Durumunuz?</h2>
 {{ military }}
 
-            </div>
+
     </div>
     <div class="col-2">
 
@@ -84,6 +85,7 @@
 
 <div class="row">
     <div class="col-6">
+    <h2>YABANCI DİL BİLGİLERİ</h2>
         {% if foreign %}
     {{ foreign.management_form }}
 
@@ -108,6 +110,7 @@
 
 
 <div class="col-6">
+ <h2>REFERANSLARINIZ</h2>
         {% if reference %}
     {{ reference.management_form }}
 
@@ -137,7 +140,7 @@
 
 
 
-<h2 style="color: #0275d8;text-align: center">Eğitim Bilgileri</h2>
+<h2>Eğitim Bilgileri</h2>
 <div class="row">
        <div class="col-2"></div>
     <div class="col-8">
@@ -153,12 +156,12 @@
 
 <br>
         <br>
-<h3 style="color: #0275d8;text-align: center">ÖZEL BİLGİLER</h3>
+<h2>ÖZEL BİLGİLER</h2>
 <div class="row">
        <div class="col-2"></div>
     <div class="col-8">
         <div>
-{{ certificate }}
+{{ private }}
 
             </div>
     </div>
@@ -167,10 +170,11 @@
     </div>
 </div>
  <br>
-<h2 style="color: #0275d8;text-align: center">İŞ TECRÜBESİ BİLGİLERİ</h2>
+
     <br>
 <div class="row">
 <div class="col-6">
+<h2>İŞ TECRÜBESİ BİLGİLERİ</h2>
         {% if works %}
     {{ works.management_form }}
 
@@ -193,6 +197,7 @@
     </div>
 
 <div class="col-6">
+<h2>KATILDIĞINIZ EĞİTİMLER / KURSLAR</h2>
         {% if course %}
     {{ course.management_form }}
 

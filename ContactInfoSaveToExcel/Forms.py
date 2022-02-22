@@ -63,7 +63,7 @@ class ForeignLanguageInfoForm(forms.Form):
 
 
 
-class CertificateInfoForm(forms.Form):
+class PrivateInfoForm(forms.Form):
     content="form-control"
     drivingLicence=forms.BooleanField(label="Sürücü Belgeniz Var mı?",required=False)
     licenseClassAndNo=forms.CharField(max_length=100,label="Var ise Sınıfı ve Numarası",required=False,widget=forms.TextInput(attrs={"class":content}))
@@ -101,7 +101,7 @@ class DutyAndPriceInfoForm(forms.Form):
 
 class MilitaryInfoForm(forms.Form):
     content = "form-control"
-    private=forms.CharField(max_length=100, required=False, label="Er Olarak Yaptıysanız.",
+    privateSoldier=forms.CharField(max_length=100, required=False, label="Er Olarak Yaptıysanız.",
                                       widget=forms.TextInput(attrs={"class": content,"value":".................ay süreyle er olarak yaptım"}))
     reserveOfficer=forms.CharField(max_length=100, required=False, label="Yedek Subay Olarak Yaptıysanız.",
                                       widget=forms.TextInput(attrs={"class": content,"value":".................ay süreyle yedek subay olarak yaptım"}))
