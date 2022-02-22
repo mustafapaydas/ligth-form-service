@@ -1,14 +1,18 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% load static %}
 {% block body %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
      <div style="margin-top: 2em;" class="note">
-                    <p>Lütfen size ulaşabilmemiz için iletişim bilgilerinizi giriniz.</p>
+                    <p>{{ uuid }}</p>
                 </div>
 
 <div class="form-content">
-    <form  method="post"action="{% url 'saveInfo' %}">
+    <form  method="post" enctype="multipart/form-data">
 
     {% csrf_token %}
+
     <div class="row">
         <div class="col-md-3">
             <label style="text-align: center;font-size: 18px">Adınız</label>
@@ -59,19 +63,81 @@
         </div>
 
 <br><br><br>
-         <div class="row">
 
-          <div class="col-md-6">
-            {{ foreign }}
 
-          </div>
-            <div class="col-md-6">
-        {{ reference }}
 
-          </div>
+<div class="row">
+       <div class="col-2"></div>
+    <div class="col-8">
+        <div>
+{{ military }}
+
+            </div>
+    </div>
+    <div class="col-2">
+
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-6">
+        {% if foreign %}
+    {{ foreign.management_form }}
+
+    <div id="foreign-form-list">
+
+    {% for form in foreign %}
+        <div class="foreign-form">
+
+            {{ form }}
+        <br>
         </div>
+    {% endfor %}
 
-<h3 style="color: #0275d8;text-align: center">Eğitim Bilgileri</h3>
+    <div id="foreign-empty-form" class="">{{ foreign.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-foreign" onclick="addForm(id,'foreign-form-list','foreign-form','foreign-empty-form')" type="button">Ekle</button>
+
+</div>
+    <br><br>
+{% endif %}
+    </div>
+
+
+<div class="col-6">
+        {% if reference %}
+    {{ reference.management_form }}
+
+    <div id="reference-form-list">
+
+    {% for form in reference %}
+        <div class="reference-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="reference-empty-form" class="">{{ reference.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-foreign" onclick="addForm(id,'reference-form-list','reference-form','reference-empty-form')" type="button">Ekle</button>
+
+</div>
+    <br><br>
+{% endif %}
+    </div>
+
+</div>
+
+
+
+
+
+
+
+<h2 style="color: #0275d8;text-align: center">Eğitim Bilgileri</h2>
 <div class="row">
        <div class="col-2"></div>
     <div class="col-8">
@@ -82,36 +148,104 @@
     </div>
 </div>
 
+
+
+
 <br>
         <br>
 <h3 style="color: #0275d8;text-align: center">ÖZEL BİLGİLER</h3>
 <div class="row">
        <div class="col-2"></div>
     <div class="col-8">
+        <div>
 {{ certificate }}
-</div>
+
+            </div>
+    </div>
     <div class="col-2">
 
     </div>
 </div>
-
-<h3 style="color: #0275d8;text-align: center">İŞ TECRÜBESİ BİLGİLERİ</h3>
+ <br>
+<h2 style="color: #0275d8;text-align: center">İŞ TECRÜBESİ BİLGİLERİ</h2>
+    <br>
 <div class="row">
-    <div class="col-md-6">
-        {{ works }}
-    </div>
-    <div class="col-md-6">
-{{ course }}
-    </div>
+<div class="col-6">
+        {% if works %}
+    {{ works.management_form }}
+
+    <div id="works-form-list">
+
+    {% for form in works %}
+        <div class="works-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="works-empty-form" class="">{{ works.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-works" onclick="addForm(id,'works-form-list','works-form','works-empty-form')" type="button">Ekle</button>
 
 </div>
-        <div style="margin-top: 2em">
-{{ file }}
+    <br><br>
+{% endif %}
+    </div>
+
+<div class="col-6">
+        {% if course %}
+    {{ course.management_form }}
+
+    <div id="course-form-list">
+
+    {% for form in course %}
+        <div class="course-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="course-empty-form" class="">{{ course.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-course" onclick="addForm(id,'course-form-list','course-form','course-empty-form')" type="button">Ekle</button>
+
 </div>
+    <br><br>
+{% endif %}
+    </div>
+</div>
+
+{{ file }}
+
 <button type="submit"  class="btnSubmit">Gönder</button>
 
 </form>
 
 </div>
 
+
+       <script>
+function addForm(btnId,formsetClass,formClass,emptyFormId){
+    const addMoreBtn = document.getElementById(btnId)
+    const totalNewForms = document.getElementById('id_form-TOTAL_FORMS')
+
+    addMoreBtn.addEventListener('onclick', add_new_form)
+
+    function add_new_form(event) {
+
+        const currentIngredientForms = document.getElementsByClassName(formClass)
+        const currentFormCount = currentIngredientForms.length //+1
+        const formCopyTarget = document.getElementById(formsetClass)
+        const copyEmptyFormEl = document.getElementById(emptyFormId).cloneNode(true)
+        copyEmptyFormEl.setAttribute('class', formClass)
+        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`)
+        const regex = new RegExp('__prefix__', 'g')
+        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
+        totalNewForms.setAttribute('value', currentFormCount + 1)
+        formCopyTarget.append(copyEmptyFormEl)
+
+    }
+add_new_form()
+}
+</script>
 {% endblock %}

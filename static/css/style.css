@@ -13,9 +13,9 @@
     border: 5px solid #ced4da;
     margin-bottom: 2%;
 }
-/*.form-control{*/
-/*    border-radius:1.5rem;*/
-/*}*/
+.form-control{
+    border-radius:1.5rem;
+}
 .btnSubmit
 {
     border:none;
@@ -27,9 +27,10 @@
     color: #fff;
     float: right;
 }
+h3{
+    color: #0275d8;
+    text-align: center;
 
-input{
-    border-radius:1.5rem;
 }
 
 

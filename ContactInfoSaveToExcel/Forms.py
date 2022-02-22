@@ -1,13 +1,13 @@
 from django import forms
-from .models import *
+from .models import CV
 from django.forms.widgets import NumberInput
-from django.forms import inlineformset_factory
 
-class PersonalInfoForm(forms.ModelForm):
+
+class PersonalInfoForm(forms.Form):
     content="form-control"
     firstName = forms.CharField(label="Adınız",required=False,widget=forms.TextInput(attrs={"placeholder":"Adınız","class":content}))
     lastName = forms.CharField(label='Soyadınız',required=False,widget=forms.TextInput(attrs={"placeholder":"Soyadınız","class":content}))
-    email = forms.EmailField(label="Doğum Yeri",required=False,widget=forms.TextInput(attrs={"class" : "form-control","placeholder":"E-mail","class":content}))
+    email = forms.EmailField(label="Doğum Yeri",required=False,widget=forms.TextInput(attrs={"placeholder":"E-mail","class":content}))
 
     yearOfBirth=forms.DateField(widget=NumberInput(attrs={'type': 'date',"class":content}),label="Doğum Yılı",required=False)
     bornPlace = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Doğum Yeri", "class": content}),
@@ -21,12 +21,10 @@ class PersonalInfoForm(forms.ModelForm):
     address=forms.CharField(widget=forms.Textarea(attrs={"placeholder":"Adres","class":content,'rows':4}),required=False)
     cellPhone=forms.CharField(max_length=13, label="Cep Telefonu Numarası",required=False,widget=forms.TextInput(attrs={"placeholder":"Cep Telefonu","class":content}))
     otherPhone = forms.CharField(max_length=13,label="Ev Telefonu Numarası",required=False,widget=forms.TextInput(attrs={"placeholder":"Ev Telefonu","class":content}))
-    file = forms.FileField()
-    class Meta:
-        # model = PersonalInfo
-        fields=["firstName","lastName","email","yearOfBirth","bornPlace","gender","address","cellPhone","otherPhone"]
 
-class EducationInfoForm(forms.ModelForm):
+
+
+class EducationInfoForm(forms.Form):
     content = "form-control"
     vocationalHighSchool = forms.CharField(max_length=100,required=False,label="Meslek Yüksek Okul",widget=forms.TextInput(attrs={
         "placeholder":"Meslek Yüksek Okul",
@@ -49,11 +47,9 @@ class EducationInfoForm(forms.ModelForm):
         "class":content
     }))
 
-    class Meta:
-        model = EducationInfo
-        fields = ["vocationalHighSchool", "undergraduate_faculty", "postgraduate", "doctorate", "otherEducation"]
 
-class ForeignLanguageInfoForm(forms.ModelForm):
+
+class ForeignLanguageInfoForm(forms.Form):
     content = "form-control"
     degreess = (
         ("M", "Orta"),
@@ -64,12 +60,10 @@ class ForeignLanguageInfoForm(forms.ModelForm):
     degree = forms.ChoiceField(choices=degreess,required=False, widget=forms.RadioSelect(),label="Seviye")
     course = forms.CharField(max_length=100,required=False, label="Öğrendiğiniz Yer",widget=forms.TextInput(attrs={"class":content}))
 
-    class Meta:
-        model = ForeignLanguage
-        fields = ["language", "degree", "course"]
 
 
-class CertificateInfoForm(forms.ModelForm):
+
+class CertificateInfoForm(forms.Form):
     content="form-control"
     drivingLicence=forms.BooleanField(label="Sürücü Belgeniz Var mı?",required=False)
     licenseClassAndNo=forms.CharField(max_length=100,label="Var ise Sınıfı ve Numarası",required=False,widget=forms.TextInput(attrs={"class":content}))
@@ -83,10 +77,7 @@ class CertificateInfoForm(forms.ModelForm):
     recordExplanation = forms.CharField(max_length=100, label="Var ise Açıklayın",required=False,widget=forms.TextInput(attrs={"class":content}))
     youSmoke = forms.BooleanField(label="Sigara İçiyor musunuz?",required=False)
 
-    class Meta:
-        model = CertificateInfo
-        fields = ["drivingLicence", "licenseClassAndNo", "healthProblem","explanationProblem", "travelRestriction", "explanationRestriction",
-                  "conscription", "conscriptionExplation", "policeRecord", "recordExplanation", "youSmoke"]
+
 class WorkExperienceInfoForm(forms.Form):
     content="form-control"
     workPlaceName = forms.CharField(max_length=50,required=False, label="İşyeri Ünvanı",widget=forms.TextInput(attrs={"class":content}))
@@ -96,35 +87,50 @@ class WorkExperienceInfoForm(forms.Form):
     startWorkDate=forms.DateField(widget=NumberInput(attrs={'type': 'date','class':content}),label="İşe Başlama Tarihi",required=False)
     breakUpDate=forms.DateField(widget=NumberInput(attrs={'type': 'date','class':content}),label="Ayrılma Tarihi",required=False)
 
-    class Meta:
-        model=WorkExperience
-        fields=["workPlaceName","duty", "price", "reasonDeparture","startWorkDate","breakUpDate"]
+
+class DutyAndPriceInfoForm(forms.Form):
+    content = "form-control"
+    oldWorkPlaceName = forms.CharField(max_length=50, required=False, label="En Son Çalıştığınız Kurumdan Aldığınız Net Ücret:",
+                                    widget=forms.TextInput(attrs={"class": content}))
+    startDateOfWork = forms.CharField(max_length=50, required=False, label="Ne Zaman Çalışmaya Başlayabilirsiniz?",
+                           widget=forms.TextInput(attrs={"class": content}))
+    intendedSalary = forms.CharField(max_length=50, required=False, label="Talep Ettiğiniz Net Ücret:",
+                            widget=forms.TextInput(attrs={"class": content}))
+    residenceChange = forms.CharField(max_length=100, required=False, label="Gerektiğinde İkamet Değişikliği Yapabilir misiniz?",
+                                      widget=forms.TextInput(attrs={"class": content}))
+
+class MilitaryInfoForm(forms.Form):
+    content = "form-control"
+    private=forms.CharField(max_length=100, required=False, label="Er Olarak Yaptıysanız.",
+                                      widget=forms.TextInput(attrs={"class": content,"value":".................ay süreyle er olarak yaptım"}))
+    reserveOfficer=forms.CharField(max_length=100, required=False, label="Yedek Subay Olarak Yaptıysanız.",
+                                      widget=forms.TextInput(attrs={"class": content,"value":".................ay süreyle yedek subay olarak yaptım"}))
+    exempted=forms.CharField(max_length=100, required=False, label="Muafsanız Muafiyet Durumunuz.",
+                                      widget=forms.TextInput(attrs={"class": content,"value":" ..............................................nedeniyle muafım"}))
+    deferment=forms.CharField(max_length=100, required=False, label="Tecilliyseniz Tecil Tarihi",
+                                      widget=forms.TextInput(attrs={"class": content,"value":"..................tarihine kadar tecilliyim"}))
+    militaryUnit=forms.CharField(max_length=100, required=False, label="Terhis Tarihiniz ve Terhis Olduğunuz Birlik:",
+                                      widget=forms.TextInput(attrs={"class": content}))
 
 
 
 class FileUpload(forms.ModelForm):
-
-    file = forms.FileField(label="CV",required=False)
+    
     class Meta:
-        model=File
+        model=CV
         fields=["file"]
-class ReferenceInfoForm(forms.ModelForm):
+
+class ReferenceInfoForm(forms.Form):
     content = "form-control"
     referenceName = forms.CharField(max_length=100, label="Referansınızın Adı Soyadı",required=False,widget=forms.TextInput(attrs={"class":content}))
     instutitionOfReference = forms.CharField(max_length=100, label="Referansınızın Kurumu ve Görevi", required=False,widget=forms.TextInput(attrs={"class":content}))
     referencePhoneNumber = forms.CharField(max_length=13, label="Referansınızın Telefon Numarası", required=False,widget=forms.TextInput(attrs={"class":content}))
 
-    class Meta:
-        model = Reference
-        fields=["referenceName","instutitionOfReference","referencePhoneNumber"]
 
-class CourseInfoForm(forms.ModelForm):
+class CourseInfoForm(forms.Form):
     content="form-control"
     institutionName=forms.CharField(label="Eğitim veren Kuruluşun Adı",max_length=100,widget=forms.TextInput(attrs={"class":content}),required=False)
     subjectOfCourse=forms.CharField(label="Eğitimin Konusu",max_length=100,widget=forms.TextInput(attrs={"class":content}),required=False)
     date=forms.CharField(label="Hangi Tarihler Arasında",max_length=100,widget=forms.TextInput(attrs={"class":content,"placeholder":"GG/AA/YYYY-GG/AA/YYYY"}),required=False)
     howManyHours=forms.IntegerField(label="Eğitim veren Kuruluşun Adı", required=False,widget=forms.TextInput(attrs={"class":content}))
 
-    class Meta:
-        model=Course
-        fields=["institutionName","subjectOfCourse","date","howManyHours"]

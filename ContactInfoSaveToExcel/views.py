@@ -1,12 +1,11 @@
 from django.shortcuts import render,HttpResponse
-from django.core.mail import send_mail
-import os
-import json
-from CryptICE import IceKey
-
-
-import datetime
-import shutil
+from .EmailHelper import *
+from .JsonFileHelper import *
+from .CryptHelper import *
+import uuid
+from django.forms import formset_factory
+from .ExcelFileHelper import *
+from .ExpirationHelper import *
 from .Forms import *
 
 def index(request):
@@ -18,8 +17,6 @@ def ContactForm(request):
         "validityTimes":range(3,25,3)
     }
     return render(request,"EntryForm.html",context)
-
-
 
 def addContact(request):
 
@@ -40,113 +37,97 @@ def addContact(request):
     }
     writeJsonFile(email,applier)
     info=readJsonFile(email)
-    sendMail(info["uuid"],email)
+    sendMail(info["iceLink"],email)
 
 
     return HttpResponse(f"<h1 style='color:red; text-align:center; margin-top:2em'>Başvuru linki {email} adresine gönderildi</h1>")
 
-
-
-def sendMail(link,email):
-
-    send_mail(
-        'Başvuru Linki',
-        f'Link: http://127.0.0.1:8000/form{link}',
-        "mntsodev@outlook.com",
-        [email]
-)
-
-def expiredLinks():
-    for i in os.listdir("Jsons"):
-        if (i.strip(i[:-4]) == "json"):
-            info = readJsonFile(i.strip(i[-5:]))
-            startingTime=os.stat(f"Jsons/{i}").st_ctime
-
-            generateDate=datetime.datetime.fromtimestamp(startingTime)
-            now=datetime.datetime.now()
-            validityTime=info["validityTime"]
-            validityTime=datetime.timedelta(hours=validityTime)
-
-            if (generateDate+validityTime) < now:
-                os.remove(f"Jsons/{i}")
-
-
-
-def generateCryptICE(email):
-
-    data = bytes(f"{email}", encoding="UTF-8")
-    key = bytearray([0x25, 0x6C, 0xC7, 0x0A, 0x00, 0x30, 0x00, 0x5C])
-
-    ice = IceKey(1, key)
-
-    encrypted_data = ice.Encrypt(data, True)
-    return str(encrypted_data)
-
-
-
-def readJsonFile(email):
-    with open(f"Jsons/{email}.json","r") as file:
-        info = json.load(file)
-    return info
-
-def writeJsonFile(email,jsonString):
-    with open(f"Jsons/{email}.json","w") as file:
-        json.dump(jsonString,file)
-
-
-
-def appeal(request,uuid):
+def appeal(request,iceLink):
     expiredLinks()
-    for i in os.listdir("Jsons"):
-        if (i.strip(i[:-4]) == "json"):
-            info = readJsonFile(i.strip(i[-5:]))
-            if uuid == info["uuid"]:
-                personalForm = PersonalInfoForm(request.POST or None)
-                education = EducationInfoForm
-                foreign = ForeignLanguageInfoForm
-                certificate = CertificateInfoForm
-                work = WorkExperienceInfoForm
-                file=FileUpload(request.FILES or None)
-                reference=ReferenceInfoForm
-                course=CourseInfoForm
-                context = {
-                    "info": info,
-                    "personalForm": personalForm,
-                    "education": education,
-                    "foreign": foreign,
-                    "certificate": certificate,
-                    "works": work,
-                    "file":file,
-                    "reference":reference,
-                    "course":course
-                }
+
+    if verifyJson(iceLink):
+
+        personalForm = PersonalInfoForm(request.POST or None)
+
+        educationForm = EducationInfoForm(request.POST or None)
 
 
+        foreignFormSet=formset_factory(ForeignLanguageInfoForm,extra=0)
+        foreignForm=foreignFormSet(request.POST or None)
+
+        military = MilitaryInfoForm(request.POST or None)
+
+        certificate = CertificateInfoForm(request.POST or None)
+
+        dutyAndPrice=DutyAndPriceInfoForm(request.POST or None)
+
+        workFormSet=formset_factory(WorkExperienceInfoForm,extra=0)
+        workForm=workFormSet(request.POST or None)
+
+        cvFile=FileUpload(request.POST or None,request.FILES or None)
+
+        if cvFile.is_valid():
+            cvFile.save()
+
+        referenceFormSet=formset_factory(ReferenceInfoForm,extra=0)
+        referenceForm=referenceFormSet(request.POST or None)
+
+        courseFormSet=formset_factory(CourseInfoForm,extra=0)
+        courseForm=courseFormSet(request.POST or None)
+
+        context = {
+
+            "personalForm": personalForm,
+            "education": educationForm,
+            "foreign": foreignForm,
+            "certificate": certificate,
+            "works": workForm,
+            "file":cvFile,
+            "reference":referenceForm,
+            "course":courseForm,
+            "military":military,
+            "duty":dutyAndPrice,
+        }
+        names = ["firstName", "lastName", "email", "yearOfBirth", "bornPlace", "address", "cellPhone", "otherPhone"]
+        if request.method == "POST":
+            email = request.POST["email"]
+            copyFile(email)
+            for i in request.POST.keys():
+
+                if i == names[0]:
+                    xlWrite(4, 9, email, request.POST[i])
+                if i == names[1]:
+                    xlWrite(4, 19, email, request.POST[i])
+                if i == names[2]:
+                    xlWrite(5, 9, email, request.POST[i])
+                if i == names[3]:
+                    xlWrite(5, 9, email, request.POST[i])
+                if i == "gender":
+                    if request.POST[i] == "M":
+                        xlWrite(6, 11, email, "X")
+                    if request.POST[i] == "F":
+                        xlWrite(6, 14, email, "X")
+                    if request.POST[i] == "N":
+                        xlWrite(6, 18, email, "X")
+                if i == names[4]:
+                    xlWrite(5, 19, email, request.POST[i])
+
+            return HttpResponse(
+                "<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Başvurunuz Başarıyla Alınmıştır.</h1>")
 
 
-                return render(request, "appealForm.html", context)
+        return render(request, "appealForm.html", context)
     else:
         return HttpResponse("<h1 style='color:red; text-align:center; margin-top:2em'>Bulunamadı. Muhtemelen Linkinizin süresi dolmuş olabilir. <a href='/generate'>Formu</a> Yeniden Doldurabilirsiniz</h1>")
 
-def copyFile(name):
-
-    shutil.copy("PR.04-FR.06 PERSONEL IS BASVURU FORMU.xlsx", f"AppealFormExcels/{name}.xlsx")
-    if os.path.exists("AppealFormExcels/{name}.xlsx"):
-        os.remove("AppealFormExcels/{name}.xlsx")
-        shutil.copy("PR.04-FR.06 PERSONEL IS BASVURU FORMU.xlsx", f"AppealFormExcels/{name}.xlsx")
 
 
 
-def save(request):
-    name = request.POST.get("firstName")
-    lastName = request.POST.get("lastName")
-    email = request.POST.get("email")
-    copyFile(name)
 
 
 
-def save(request):
-    return HttpResponse("<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Başvurunuz Başarıyla Alınmıştır.</h1>")
+
+
 
 
 
