@@ -4,9 +4,18 @@
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 
-     <div style="margin-top: 2em;" class="note">
+
+    {% if messages %}
+<div class="container">
+    {% for message in messages %}
+    <div  {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+</div>
+        {% else %}
+        <div style="margin-top: 2em;" class="note">
                     <p>{{ uuid }}</p>
                 </div>
+{% endif %}
 
 <div class="form-content">
     <form action="{% url 'saveInfo' %}" method="post" enctype="multipart/form-data">

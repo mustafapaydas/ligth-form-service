@@ -6,6 +6,7 @@ from .CryptHelper import *
 import uuid
 from django.forms import formset_factory
 from .ExcelFileHelper import *
+from django.contrib import messages
 from .ExpirationHelper import *
 
 
@@ -170,8 +171,7 @@ def appeal(request,iceLink):
                                     xlWrite(24, 16, email, "X")
                                 xlWrite(24, 18, email, request.POST[''])
 
-                        return HttpResponse(
-                            "<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Başvurunuz Başarıyla Alınmıştır.</h1>")
+                        return messages.warning(request,"Bilgilerinizi Kontrol Ediniz!")
                 except:
                     return HttpResponse(
                         "<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Geri Dönerek Bilgilerinizi Kontrol Edin</h1>")
