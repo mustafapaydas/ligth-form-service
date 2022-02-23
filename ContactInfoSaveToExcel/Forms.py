@@ -1,5 +1,5 @@
 from django import forms
-from .models import CV
+
 from django.forms.widgets import NumberInput
 
 
@@ -114,11 +114,9 @@ class MilitaryInfoForm(forms.Form):
 
 
 
-class FileUpload(forms.ModelForm):
+class FileUpload(forms.Form):
     
-    class Meta:
-        model=CV
-        fields=["file"]
+    file=forms.FileField(required=False)
 
 class ReferenceInfoForm(forms.Form):
     content = "form-control"

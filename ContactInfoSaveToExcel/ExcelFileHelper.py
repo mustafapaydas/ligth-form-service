@@ -2,6 +2,7 @@ import shutil
 import os
 from openpyxl.styles import Font
 import openpyxl as xl
+
 def copyFile(email):
 
     shutil.copy("PR.04-FR.06 PERSONEL IS BASVURU FORMU.xlsx", f"AppealFormExcels/{email}.xlsx")
