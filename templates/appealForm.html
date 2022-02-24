@@ -1,25 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 {% block body %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-
 
     {% if messages %}
-<div class="container">
     {% for message in messages %}
-    <div  {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+    <div style="margin-top: 2em; text-align: center"  {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
     {% endfor %}
-</div>
+
         {% else %}
-        <div style="margin-top: 2em;" class="note">
+        <div class="note">
                     <p>{{ uuid }}</p>
                 </div>
 {% endif %}
-
 <div class="form-content">
     <form action="{% url 'saveInfo' %}" method="post" enctype="multipart/form-data">
-
     {% csrf_token %}
 <h2>KİMLİK BİLGİLERİ</h2>
     <div class="row">
@@ -41,10 +35,10 @@
   </div>
 <div class="col-md-3">
     <label style="text-align: center;font-size: 18px">Doğum Yılı</label>
-{{ personalForm.yearOfBirth }}
+{{ personalForm.dateOfBirth }}
     <br>
     <label style="text-align: center;font-size: 18px">Doğum Yeri</label>
-{{ personalForm.bornPlace }}
+{{ personalForm.birthplace }}
   </div>
         </div>
         <br>
@@ -74,19 +68,18 @@
 
 <br><br><br>
 
-
-
 <div class="row">
-       <div class="col-2"></div>
-    <div class="col-8">
+
+    <div class="col-6">
        <h2>Askerlik Durumunuz?</h2>
 {{ military }}
 
-
     </div>
-    <div class="col-2">
+  <div class="col-6">
+      <h2>Eğitim Bilgileri</h2>
+      {{ education }}
+  </div>
 
-    </div>
 </div>
 
 
@@ -97,27 +90,102 @@
     <h2>YABANCI DİL BİLGİLERİ</h2>
         {% if foreign %}
     {{ foreign.management_form }}
-
     <div id="foreign-form-list">
-
     {% for form in foreign %}
         <div class="foreign-form">
 
             {{ form }}
-        <br>
         </div>
-    {% endfor %}
 
+    {% endfor %}
     <div id="foreign-empty-form" class="">{{ foreign.empty_form }}</div>
     <br>
     <button class="btn btn-primary" id="add-more-foreign" onclick="addForm(id,'foreign-form-list','foreign-form','foreign-empty-form')" type="button">Ekle</button>
 
 </div>
+
+
     <br><br>
 {% endif %}
     </div>
 
 
+<div class="col-6">
+<h2>KATILDIĞINIZ EĞİTİMLER / KURSLAR</h2>
+        {% if course %}
+    {{ course.management_form }}
+
+    <div id="course-form-list">
+
+    {% for form in course %}
+        <div class="course-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="course-empty-form" class="">{{ course.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-course" onclick="addForm(id,'course-form-list','course-form','course-empty-form')" type="button">Ekle</button>
+
+</div>
+    <br><br>
+{% endif %}
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="row">
+<div class="col-6">
+<h2>İŞ TECRÜBESİ BİLGİLERİ</h2>
+        {% if works %}
+    {{ works.management_form }}
+
+    <div id="works-form-list">
+
+    {% for form in works %}
+
+        <div class="works-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="works-empty-form" class="">{{ works.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-works" onclick="addForm(id,'works-form-list','works-form','works-empty-form')" type="button">Ekle</button>
+<br><br>
+             </div>
+
+{% endif %}
+</div>
+
+
+
+<div class="col-6">
+<h2>ÖZEL BİLGİLER</h2>
+{{ private }}
+
+    </div>
+
+
+    </div>
+
+
+
+
+<div class="row">
+
+    </div>
+
+
+
+<div class="row">
 <div class="col-6">
  <h2>REFERANSLARINIZ</h2>
         {% if reference %}
@@ -141,95 +209,42 @@
 {% endif %}
     </div>
 
-</div>
-
-
-
-
-
-
-
-<h2>Eğitim Bilgileri</h2>
-<div class="row">
-       <div class="col-2"></div>
-    <div class="col-8">
-{{ education }}
-</div>
-    <div class="col-2">
-
-    </div>
-</div>
-
-
-
-
-<br>
-        <br>
-<h2>ÖZEL BİLGİLER</h2>
-<div class="row">
-       <div class="col-2"></div>
-    <div class="col-8">
-        <div>
-{{ private }}
-
-            </div>
-    </div>
-    <div class="col-2">
-
-    </div>
-</div>
- <br>
-
-    <br>
-<div class="row">
 <div class="col-6">
-<h2>İŞ TECRÜBESİ BİLGİLERİ</h2>
-        {% if works %}
-    {{ works.management_form }}
+<h2>GÖREV VE ÜCRET TALEPLERİ</h2>
+{{ duty }}
 
-    <div id="works-form-list">
 
-    {% for form in works %}
-        <div class="works-form">
-            {{ form }}
-
-        </div>
-    {% endfor %}
-
-    <div id="works-empty-form" class="">{{ works.empty_form }}</div>
-    <br>
-    <button class="btn btn-primary" id="add-more-works" onclick="addForm(id,'works-form-list','works-form','works-empty-form')" type="button">Ekle</button>
-
-</div>
-    <br><br>
-{% endif %}
     </div>
 
-<div class="col-6">
-<h2>KATILDIĞINIZ EĞİTİMLER / KURSLAR</h2>
-        {% if course %}
-    {{ course.management_form }}
-
-    <div id="course-form-list">
-
-    {% for form in course %}
-        <div class="course-form">
-            {{ form }}
-
-        </div>
-    {% endfor %}
-
-    <div id="course-empty-form" class="">{{ course.empty_form }}</div>
-    <br>
-    <button class="btn btn-primary" id="add-more-course" onclick="addForm(id,'course-form-list','course-form','course-empty-form')" type="button">Ekle</button>
-
 </div>
-    <br><br>
-{% endif %}
-    </div>
-</div>
+
+
 
 {{ file }}
+    <br>
+    <br><br>
+    <br>
+<div class="row">
+ <div class="col-2"></div>
+    <div class="col-8 verify">
+
+            <label>
+ İş bu iş isteme formundaki sorulara verdiğim cevapların tam ve doğru olduğunu, zaman içerisinde değişecek olan bilgilerimi en geç 10(on)gün içerisinde yazılı olarak bildireceğimi ve hakikat dışı veya eksik bir beyanımla işe alınmış olduğumun anlaşılması halinde herhangi bir ihbar ve tazminata gerek olmaksızın işime son verileceğini ve bundan dolayı herhangi bir takip,talep ve iddiada bulunmayacağımı ve eksik veya hakikat dışında beyanımla işe alınmamdan dolayı şirketin uğrayabileceği hertürlü zarar ve ziyanı tazmin edeceğimi kabul ve beyan ederim.
+</label>
+        {{ verify.verify }}
+
+        </div>
+    <div class="col-2"></div>
+
+</div>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+    {{ verify.date }}
+        </div>
+    <div class="col-3"></div>
+</div>
 
 <button type="submit"  class="btnSubmit">Gönder</button>
 
@@ -237,29 +252,4 @@
 
 </div>
 
-
-       <script>
-function addForm(btnId,formsetClass,formClass,emptyFormId){
-    const addMoreBtn = document.getElementById(btnId)
-    const totalNewForms = document.getElementById('id_form-TOTAL_FORMS')
-
-    addMoreBtn.addEventListener('onclick', add_new_form)
-
-    function add_new_form(event) {
-
-        const currentIngredientForms = document.getElementsByClassName(formClass)
-        const currentFormCount = currentIngredientForms.length //+1
-        const formCopyTarget = document.getElementById(formsetClass)
-        const copyEmptyFormEl = document.getElementById(emptyFormId).cloneNode(true)
-        copyEmptyFormEl.setAttribute('class', formClass)
-        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`)
-        const regex = new RegExp('__prefix__', 'g')
-        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
-        totalNewForms.setAttribute('value', currentFormCount + 1)
-        formCopyTarget.append(copyEmptyFormEl)
-
-    }
-add_new_form()
-}
-</script>
 {% endblock %}

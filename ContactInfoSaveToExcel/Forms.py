@@ -9,8 +9,8 @@ class PersonalInfoForm(forms.Form):
     lastName = forms.CharField(label='Soyadınız',required=False,widget=forms.TextInput(attrs={"placeholder":"Soyadınız","class":content}))
     email = forms.EmailField(label="Doğum Yeri",required=False,widget=forms.TextInput(attrs={"placeholder":"E-mail","class":content}))
 
-    yearOfBirth=forms.DateField(widget=NumberInput(attrs={'type': 'date',"class":content}),label="Doğum Yılı",required=False)
-    bornPlace = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Doğum Yeri", "class": content}),
+    dateOfBirth=forms.DateField(widget=NumberInput(attrs={'type': 'date',"class":content}),label="Doğum Yılı",required=False)
+    birthplace = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Doğum Yeri", "class": content}),
                               required=False)
     genderChoices = (
     ("M", "Erkek"),
@@ -72,7 +72,7 @@ class PrivateInfoForm(forms.Form):
     travelRestriction = forms.BooleanField(label="Seyahat Engeliniz Var mı?",required=False)
     explanationRestriction = forms.CharField(max_length=100, label="Var ise Açıklayın",required=False,widget=forms.TextInput(attrs={"class":content}))
     conscription = forms.BooleanField(label="Mecburi Hizmet Borcunuz Var mı?",required=False)
-    conscriptionExplation = forms.CharField(max_length=100, label="Var ise Açıklayın",required=False,widget=forms.TextInput(attrs={"class":content}))
+    conscriptionExplanation = forms.CharField(max_length=100, label="Var ise Açıklayın",required=False,widget=forms.TextInput(attrs={"class":content}))
     policeRecord = forms.BooleanField(label="Adli Sicil Kaydınız Var mı?",required=False)
     recordExplanation = forms.CharField(max_length=100, label="Var ise Açıklayın",required=False,widget=forms.TextInput(attrs={"class":content}))
     youSmoke = forms.BooleanField(label="Sigara İçiyor musunuz?",required=False)
@@ -90,7 +90,7 @@ class WorkExperienceInfoForm(forms.Form):
 
 class DutyAndPriceInfoForm(forms.Form):
     content = "form-control"
-    oldWorkPlaceName = forms.CharField(max_length=50, required=False, label="En Son Çalıştığınız Kurumdan Aldığınız Net Ücret:",
+    oldWorkPlacePrice = forms.CharField(max_length=50, required=False, label="En Son Çalıştığınız Kurumdan Aldığınız Net Ücret:",
                                     widget=forms.TextInput(attrs={"class": content}))
     startDateOfWork = forms.CharField(max_length=50, required=False, label="Ne Zaman Çalışmaya Başlayabilirsiniz?",
                            widget=forms.TextInput(attrs={"class": content}))
@@ -132,3 +132,6 @@ class CourseInfoForm(forms.Form):
     date=forms.CharField(label="Hangi Tarihler Arasında",max_length=100,widget=forms.TextInput(attrs={"class":content,"placeholder":"GG/AA/YYYY-GG/AA/YYYY"}),required=False)
     howManyHours=forms.IntegerField(label="Eğitim veren Kuruluşun Adı", required=False,widget=forms.TextInput(attrs={"class":content}))
 
+class VerifyForm(forms.Form):
+    verify = forms.BooleanField(required=True,label="Onay")
+    date=forms.DateField(widget=NumberInput(attrs={'type': 'date',"class":"form-control"}),label="Tarih")

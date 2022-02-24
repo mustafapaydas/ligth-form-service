@@ -1,4 +1,6 @@
-from django.shortcuts import render,HttpResponse,redirect
+import datetime
+
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, redirect
 import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -11,7 +13,7 @@ from django.forms import formset_factory
 from .ExcelFileHelper import *
 from django.contrib import messages
 from .ExpirationHelper import *
-
+from django.template.loader import render_to_string
 from .Forms import *
 
 def index(request):
@@ -93,6 +95,7 @@ def appeal(request,iceLink):
                     "course":courseForm,
                     "military":military,
                     "duty":dutyAndPrice,
+                    "verify":VerifyForm(request.POST or None)
                 }
 
 
@@ -101,132 +104,103 @@ def appeal(request,iceLink):
     else:
         return HttpResponse("<h1 style='color:red; text-align:center; margin-top:2em'>Bulunamadı. Muhtemelen Linkinizin süresi dolmuş olabilir. <a href='/generate'>Formu</a> Yeniden Doldurabilirsiniz</h1>")
 
-
-
 def save(request):
-
-
     try:
-        file = request.FILES["file"]
-        default_storage.save(file, ContentFile(file.read()))
-        if request.method == "POST":
-            email = request.POST["email"]
-            copyFile(email)
-            xlWrite(4, 9, email, request.POST["firstName"])
-            xlWrite(4, 19, email, request.POST["lastName"])
-            xlWrite(5, 9, email, request.POST["email"])
-            xlWrite(5, 9, email, request.POST["yearOfBirth"])
-            xlWrite(5, 19, email, request.POST["bornPlace"])
-            xlWrite(7, 9, email, request.POST["address"])
-            xlWrite(8, 9, email, request.POST["otherPhone"])
-            xlWrite(8, 16, email, request.POST["cellPhone"])
-            if request.POST["gender"] == "M":
-                xlWrite(6, 11, email, "X")
-            if request.POST["gender"] == "F":
-                xlWrite(6, 14, email, "X")
-            if request.POST["gender"] == "N":
-                xlWrite(6, 18, email, "X")
-            xlWrite(15, 12, email, request.POST["vocationalHighSchool"])
-            xlWrite(16, 12, email, request.POST["undergraduate_faculty"])
-            xlWrite(17, 12, email, request.POST["postgraduate"])
-            xlWrite(18, 12, email, request.POST["doctorate"])
-            xlWrite(19, 12, email, request.POST["otherEducation"])
-            for i in request.POST.keys():
+        email = request.POST["email"]
+        man,woman,notWantSpecify,secondLanguage, secondReference="","","","",""
+        licence,healthProblem,travelRestriction,conscription,policeRecord,youSmoke="","","","","",""
+        referenceInfo=["","",""]
+        negative =["","","","","",""]
+        explanations=["","","","",""]
+        for i in request.POST.keys():
+            if "form-0-language" == i:
+                secondLanguage=request.POST[i]
+            if "form-0-referenceName" == i:
+                referenceInfo[0] =request.POST[i]
+                referenceInfo[1]=request.POST["form-0-instutitionOfReference"]
+                referenceInfo[2] = request.POST["form-0-referencePhoneNumber"]
+            if "gender" == "M":
+                man="X"
+            if "gender" == "F":
+                woman="X"
+            if "gender" == "N":
+                notWantSpecify="X"
+            if "drivingLicence" == i:
+                licence ="X"
+                explanations[0]=request.POST["licenseClassAndNo"]
+            else:
+                negative[0]="Y"
+            if "healthProblem" == i:
+                healthProblem ="X"
+                explanations[1] = request.POST["licenseClassAndNo"]
+            else:
+                negative[1]="Y"
+            if "travelRestriction" == i:
+                travelRestriction = "X"
+                explanations[2] = request.POST["licenseClassAndNo"]
+            else:
+                negative[2]="Y"
+            if "conscription" == i:
+                conscription = "X"
+                explanations[4] = request.POST["licenseClassAndNo"]
+            else:
+                negative[3]="Y"
+            if "policeRecord" == i:
+                policeRecord = "X"
+                explanations[4] = request.POST["licenseClassAndNo"]
+            else:
+                negative[4]="Y"
+            if "youSmoke" == i:
+                youSmoke = "X"
+            else:
+                negative[5]="Y"
 
-                if "drivingLicence" == i:
-                    xlWrite(39, 9, email, 'X')
-                    xlWrite(39, 13, email, request.POST["licenseClassAndNo"])
-                if "healthProblem" == i:
-                    xlWrite(40, 9, email, 'X')
-                    xlWrite(40, 13, email, request.POST["explanationProblem"])
-                if "travelRestriction" == i:
-                    xlWrite(41, 9, email, 'X')
-                    xlWrite(41, 13, email, request.POST["explanationRestriction"])
-                if "conscription" == i:
-                    xlWrite(42, 9, email, 'X')
-                    xlWrite(42, 13, email, request.POST["conscriptionExplation"])
-                if "policeRecord" == i:
-                    xlWrite(43, 9, email, 'X')
-                    xlWrite(44, 13, email, request.POST["recordExplanation"])
-                if "youSmoke" == i:
-                    xlWrite(44, 9, email, 'X')
+        context = {
+            "firstName":request.POST["firstName"],
+            "lastName":request.POST["lastName"],
+            "dateOfBirth":request.POST["dateOfBirth"],
+            "birthplace":request.POST["birthplace"],
+            "address":request.POST["address"],
+            "cellPhone": request.POST["cellPhone"],
+            "otherPhone": request.POST["otherPhone"],
+            "vocationalHighSchool": request.POST["vocationalHighSchool"],
+            "undergraduate_faculty": request.POST["undergraduate_faculty"],
+            "postgraduate": request.POST["postgraduate"],
+            "doctorate": request.POST["doctorate"],
+            "otherEducation": request.POST["otherEducation"],
+            "privateSoldier": request.POST["privateSoldier"],
+            "reserveOfficer": request.POST["reserveOfficer"],
+            "exempted": request.POST["exempted"],
+            "deferment": request.POST["deferment"],
+            "militaryUnit": request.POST["militaryUnit"],
+            "oldWorkPlacePrice": request.POST["oldWorkPlacePrice"],
+            "startDateOfWork": request.POST["startDateOfWork"],
+            "intendedSalary": request.POST["intendedSalary"],
+            "residenceChange": request.POST["residenceChange"],
+            "language":request.POST["form-__prefix__-language"],
+            "course":request.POST["form-__prefix__-course"],
+            "secondLanguage":secondLanguage,
+            "secondCourse":request.POST["form-0-course"],
+            "referenceName":request.POST["form-__prefix__-referenceName"],
+            "instutitionOfReference":request.POST["form-__prefix__-instutitionOfReference"],
+            "referencePhoneNumber":request.POST["form-__prefix__-referencePhoneNumber"],
+            "secondReference":referenceInfo[0],
+            "secondInstutitionOfReference":referenceInfo[1],
+            "secondReferencePhoneNumber":referenceInfo[2],
+            "man":man,"woman":woman,"notWant":notWantSpecify,
+            "licence":licence,"licenseClassAndNo":explanations[0],
+            "healthProblem":healthProblem,"problem":explanations[1],
+            "travelRestriction":travelRestriction,"restriction":explanations[2],
+            "conscriptionExplanation":explanations[3],"conscription":conscription,
+            "policeRecord":policeRecord,"recordExplanation":explanations[4],
+            "youSmoke":youSmoke, "negatives" :negative,
 
-                if "form-__prefix__-language" == i:
+        }
 
-                    xlWrite(23, 2, email, request.POST[i])
-
-                if "form-__prefix__-degree" == i:
-
-                    if request.POST[i] == "M":
-                        xlWrite(23,9, email, "X")
-                    if request.POST[i] == "G":
-                        xlWrite(23,13, email, "X")
-                    if request.POST[i] == "VG":
-                        xlWrite(23,16, email, "X")
-                    xlWrite(23,18,email, request.POST['X'])
-
-                if "form-__prefix__-course" == i:
-                    xlWrite(23, 18, email, request.POST[i])
-
-                if "form-0-language" == i:
-
-                    xlWrite(23, 2, email, request.POST[i])
-
-                if "form-0-degree" == i:
-
-                    if request.POST[i] == "M":
-                        xlWrite(24,9, email, "X")
-                    if request.POST[i] == "G":
-                        xlWrite(24,13, email, "X")
-                    if request.POST[i] == "VG":
-                        xlWrite(24,16, email, "X")
-                    xlWrite(24,18,email, request.POST['X'])
-
-                if "form-0-course" == i:
-                    xlWrite(24, 18, email, request.POST[i])
-
-                if "form-__prefix__-workPlaceName" == i:
-                    xlWrite(27,1, email, request.POST[i])
-                if "form-__prefix__-duty" in i:
-                    xlWrite(27, 9, email, request.POST[i])
-                if "form-__prefix__-price" in i:
-                    xlWrite(27,16, email, request.POST[i])
-                if "form-__prefix__-reasonDeparture" in i:
-                    xlWrite(27,17, email, request.POST[i])
-                if "startWorkDate" in i:
-                    xlWrite(27,26, email, request.POST[i])
-                if "breakUpDate" in i:
-                    xlWrite(27,27, email, request.POST[i])
-
-
-
-            xlWrite(9, 9, email, request.POST["privateSoldier"])
-            xlWrite(10, 9, email, request.POST["reserveOfficer"])
-            xlWrite(11, 9, email, request.POST["exempted"])
-            xlWrite(12, 9, email, request.POST["deferment"])
-            xlWrite(13, 9, email, request.POST["militaryUnit"])
-
-
-
-
-
-
-
-            return HttpResponse(
-                "<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Başvurunuz Başarıyla Alınmıştır.</h1>")
+        transferInfo = render_to_string("appealForm.xml",context)
+        with open(f"{email}.xls","w",encoding="utf-8") as xls:
+            xls.write(transferInfo)
+        return HttpResponse("<h2>Başvurunuz Başarıyla Alınmıştır. Sağlıklı Günler Dileriz.</h1>")
     except:
-
         messages.warning(request, "Bilgilerinizi Kontrol Ediniz!")
-        return HttpResponse(
-            "<h1 style='color: #0275d8;text-align: center; margin-top:3em;'>Hatalı veya Eksik Bilgi Girdiniz!</h1>")
-
-
-
-
-
-
-
-
-
-
-
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
