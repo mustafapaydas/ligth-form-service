@@ -150,8 +150,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_HOST_USER = "mntsodev@outlook.com"
-EMAIL_HOST_PASSWORD = "Mnts123odev?***django"
+EMAIL_HOST_USER = "e-mail"
+EMAIL_HOST_PASSWORD = "password"
 
 
 
