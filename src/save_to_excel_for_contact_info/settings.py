@@ -145,11 +145,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp-mail.outlook.com'
-<<<<<<< HEAD:src/save_to_excel_for_contact_info/settings.py
 EMAIL_HOST_USER = "email"
-=======
 EMAIL_HOST_USER = "e-mail"
->>>>>>> 6c419c94c9fe86b61d299fa3accb2974871f70fd:SaveToExcelForContactInfo/settings.py
 EMAIL_HOST_PASSWORD = "password"
 
 
