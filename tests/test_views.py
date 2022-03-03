@@ -4,7 +4,7 @@ from django.test import TestCase
 from src import contact_info_save_to_excel as email
 from django.core.mail import send_mail, EmailMessage
 
-class HomePageTest(TestCase):
+class ProjectTest(TestCase):
 
     def test_email_check(self):
         self.assertTrue(email.send_to_mail,send_mail)
