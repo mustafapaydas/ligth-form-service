@@ -23,7 +23,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9"
     ],
-    install_requires=['Django~=4.0.2', 'CryptICE`~=2.0','openpyxl~=3.0.9'],
+    install_requires=['Django~=4.0.2', 'CryptICE~=2.0','openpyxl~=3.0.9'],
     python_requires=">3.8.*, <4",
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"}
