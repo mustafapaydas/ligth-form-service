@@ -1,0 +1,1 @@
+Kullanıcının uygulamada doldurmuş olduğu başvuru bilgileri bu kalsörde excel formatında tutulur
