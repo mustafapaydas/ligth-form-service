@@ -1,0 +1,77 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+
+        <link href="{% static 'css/materialdesignicons.min.css' %}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.3/css/line.css">
+        <!-- Slider -->
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}"/>
+
+        <link href="{% static 'css/colors/default.css' %}" rel="stylesheet" id="color-opt">
+
+
+    <title>{% block title %} {% endblock title %}</title>
+</head>
+
+    {% include "navbar.html" %}
+{% include "section.html" %}
+
+<body>
+
+<div class="container">
+
+{% block body %}
+
+{% endblock body %}
+</div>
+       <script>
+function addForm(btnId,formsetClass,formClass,emptyFormId){
+    const addMoreBtn = document.getElementById(btnId)
+    const totalNewForms = document.getElementById('id_form-TOTAL_FORMS')
+
+    addMoreBtn.addEventListener('onclick', add_new_form)
+
+    function add_new_form(event) {
+
+        const currentIngredientForms = document.getElementsByClassName(formClass)
+        const currentFormCount = currentIngredientForms.length //+1
+        const formCopyTarget = document.getElementById(formsetClass)
+        const copyEmptyFormEl = document.getElementById(emptyFormId).cloneNode(true)
+        copyEmptyFormEl.setAttribute('class', formClass)
+        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`)
+        const regex = new RegExp('__prefix__', 'g')
+        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
+        totalNewForms.setAttribute('value', currentFormCount + 1)
+        formCopyTarget.append(copyEmptyFormEl)
+
+    }
+add_new_form()
+}
+</script>
+<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'js/scrollspy.min.js' %}"></script>
+
+        <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/owl.init.js' %}"></script>
+
+        <script src="{% static 'js/feather.min.js' %}"></script>
+        <script src="https://unicons.iconscout.com/release/v3.0.3/script/monochrome/bundle.js"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+
+</body>
+
+{% include "footer.html" %}
+</div>
+</html>

@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% block title %} Başvuru Formu {% endblock %}
+{% load static %}
+{% block body %}
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="margin-top: 2em; text-align: center"  {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+
+        {% else %}
+        <div class="note">
+                    <p>{{ uuid }}</p>
+                </div>
+{% endif %}
+<div class="form-content">
+    <form action="{% url 'saveInfo' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+<h4 class="appealheader">KİMLİK BİLGİLERİ</h4>
+    <div class="row">
+
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Adınız</label>
+{{ personalForm.firstName }}
+
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Soyadınız</label>
+{{ personalForm.lastName }}
+
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Email</label>
+{{ personalForm.email }}
+
+  </div>
+<div class="col-md-3">
+    <label style="text-align: center;font-size: 18px">Doğum Yılı</label>
+{{ personalForm.dateOfBirth }}
+    <br>
+    <label style="text-align: center;font-size: 18px">Doğum Yeri</label>
+{{ personalForm.birthplace }}
+  </div>
+        </div>
+        <br>
+
+        <div class="row">
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Adres</label>
+{{ personalForm.address }}
+
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Cinsiyet</label>
+{{ personalForm.gender }}
+
+  </div>
+        <div class="col-md-3">
+            <label style="text-align: center;font-size: 18px">Cep Telefonu</label>
+{{ personalForm.cellPhone }}
+
+  </div>
+<div class="col-md-3">
+    <label style="text-align: center;font-size: 18px">Ev Telefonu</label>
+{{ personalForm.otherPhone }}
+
+  </div>
+        </div>
+
+<br><br><br>
+
+<div class="row">
+
+    <div class="col-6">
+       <h4 class="appealheader">Askerlik Durumunuz?</h4>
+{{ military }}
+
+    </div>
+  <div class="col-6">
+      <h4 class="appealheader">Eğitim Bilgileri</h4>
+      {{ education }}
+  </div>
+
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-6">
+    <h4 class="appealheader">YABANCI DİL BİLGİLERİ</h4>
+        {% if foreign %}
+    {{ foreign.management_form }}
+    <div id="foreign-form-list">
+    {% for form in foreign %}
+        <div class="foreign-form">
+
+            {{ form }}
+        </div>
+
+    {% endfor %}
+    <div id="foreign-empty-form" class="">{{ foreign.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-foreign" onclick="addForm(id,'foreign-form-list','foreign-form','foreign-empty-form')" type="button">Ekle</button>
+
+</div>
+
+
+    <br><br>
+{% endif %}
+    </div>
+
+
+<div class="col-6">
+<h4 class="appealheader">KATILDIĞINIZ EĞİTİMLER / KURSLAR</h4>
+        {% if course %}
+    {{ course.management_form }}
+
+    <div id="course-form-list">
+
+    {% for form in course %}
+        <div class="course-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="course-empty-form" class="">{{ course.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-course" onclick="addForm(id,'course-form-list','course-form','course-empty-form')" type="button">Ekle</button>
+
+</div>
+    <br><br>
+{% endif %}
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="row">
+<div class="col-6">
+<h4 class="appealheader">İŞ TECRÜBESİ BİLGİLERİ</h4>
+        {% if works %}
+    {{ works.management_form }}
+
+    <div id="works-form-list">
+
+    {% for form in works %}
+
+        <div class="works-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="works-empty-form" class="">{{ works.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-works" onclick="addForm(id,'works-form-list','works-form','works-empty-form')" type="button">Ekle</button>
+<br><br>
+             </div>
+
+{% endif %}
+</div>
+
+
+
+<div class="col-6">
+<h2>ÖZEL BİLGİLER</h2>
+{{ private }}
+
+    </div>
+
+
+    </div>
+
+
+
+
+<div class="row">
+
+    </div>
+
+
+
+<div class="row">
+<div class="col-6">
+ <h4 class="appealheader">REFERANSLARINIZ</h4>
+        {% if reference %}
+    {{ reference.management_form }}
+
+    <div id="reference-form-list">
+
+    {% for form in reference %}
+        <div class="reference-form">
+            {{ form }}
+
+        </div>
+    {% endfor %}
+
+    <div id="reference-empty-form" class="">{{ reference.empty_form }}</div>
+    <br>
+    <button class="btn btn-primary" id="add-more-foreign" onclick="addForm(id,'reference-form-list','reference-form','reference-empty-form')" type="button">Ekle</button>
+
+</div>
+    <br><br>
+{% endif %}
+    </div>
+
+<div class="col-6">
+<h4 class="appealheader">GÖREV VE ÜCRET TALEPLERİ</h4>
+{{ duty }}
+
+
+    </div>
+
+</div>
+
+
+
+{{ file }}
+    <br>
+    <br>
+    <div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+    {{ verify.date }}
+        </div>
+    <div class="col-3"></div>
+</div>
+    <br>
+
+<div class="row">
+ <div class="col-2"></div>
+    <div class="col-8 verify">
+
+            <p style="color: #1c2938; font-size: 15px;">
+ İş bu iş isteme formundaki sorulara verdiğim cevapların tam
+                ve doğru olduğunu, zaman içerisinde değişecek olan bilgilerimi en geç
+                10(on)gün içerisinde yazılı olarak bildireceğimi ve hakikat dışı veya eksik bir beyanımla işe
+                alınmış olduğumun anlaşılması halinde herhangi bir ihbar ve tazminata gerek olmaksızın işime
+                son verileceğini ve bundan dolayı herhangi bir takip,talep ve iddiada bulunmayacağımı ve eksik veya
+                hakikat dışında beyanımla işe alınmamdan dolayı şirketin uğrayabileceği hertürlü zarar ve ziyanı tazmin
+                edeceğimi kabul ve beyan ederim.
+</p>
+        <label>Onaylıyorum*</label>
+        {{ verify.verify }}
+
+
+    <div class="col-2"></div>
+
+</div>
+</div>
+
+
+<button type="submit"  class="btn btn-primary pstn">Gönder</button>
+
+</form>
+
+</div>
+
+{% endblock %}
