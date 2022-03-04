@@ -13,12 +13,13 @@ def copy_file(email):
 
 
 def write_to_xlsx(row, column, file, value):
-
-    wb=xl.load_workbook(f"appeal_form_excels/{file}.xlsx")
+    folder = "appeal_form_excels"
+    file_helper.exists_path(folder)
+    wb=xl.load_workbook(f"{folder}/{file}.xlsx")
     sheet = wb.active
     font = Font(name='PT Sans', size=11,)
 
     a = sheet.cell(row=row, column=column)
     a.font = font
     a.value = value
-    wb.save(f"appeal_form_excels/{file}.xlsx")
+    wb.save(f"{folder}/{file}.xlsx")
