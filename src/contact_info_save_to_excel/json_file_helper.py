@@ -1,6 +1,6 @@
 import json
 import os
-
+import file_helper
 def read_json_file(email):
 
     with open(f"jsons/{email}.json","r") as file:
@@ -8,6 +8,8 @@ def read_json_file(email):
     return info
 
 def write_json_file(email, jsonString):
-    with open(f"jsons/{email}.json","w") as file:
+    folder = "jsons"
+    file_helper.exists_path(folder)
+    with open(f"{folder}/{email}.json","w") as file:
         json.dump(jsonString,file)
 

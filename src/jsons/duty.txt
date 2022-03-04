@@ -1,1 +1,0 @@
-Kullanıcı Bilgileri json formatında bu dosyaya kaydolur.
